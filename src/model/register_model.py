@@ -6,35 +6,23 @@ import logging
 from src.logger import logging
 import os
 import dagshub
+from src.config import config
 
 import warnings
 warnings.simplefilter("ignore", UserWarning)
 warnings.filterwarnings("ignore")
 
-# Below code block is for production use
-# -------------------------------------------------------------------------------------
-# Set up DagsHub credentials for MLflow tracking
-dagshub_token = os.getenv("CAPSTONE_TEST")
-if not dagshub_token:
-    raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
-
-os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
-
 dagshub_url = "https://dagshub.com"
-repo_owner = "aleeazeem"
-repo_name = "MLOPS-Project"
-# Set up MLflow tracking URI
+repo_owner = config.dagshub_username
+repo_name = config.mlflow_repo_name
 mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
-# -------------------------------------------------------------------------------------
 
-
-# Below code block is for local use
-# -------------------------------------------------------------------------------------
-# mlflow.set_tracking_uri('https://dagshub.com/aleeazeem/MLOPS-Project.mlflow')
-# dagshub.init(repo_owner='aleeazeem', repo_name='MLOPS-Project', mlflow=True)
-# -------------------------------------------------------------------------------------
-
+if config.environment == 'local':
+    dagshub.init(repo_owner='aleeazeem', repo_name='MLOPS-Project', mlflow=True)
+else: 
+    dagshub_token = config.dagshub_token
+    os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+    os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
 def load_model_info(file_path: str) -> dict:
     """Load the model info from a JSON file."""

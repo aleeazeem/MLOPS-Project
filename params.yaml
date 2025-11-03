@@ -1,6 +1,21 @@
 # params.yaml
+file_name: data.csv
+
 data_ingestion:
   test_size: 0.25
 
 feature_engineering:
   max_features: 50
+
+bucket:
+  name: complaints-datagrid-alee
+  region: us-west-1
+
+mlflow:
+  tracking_uri: https://dagshub.com/aleeazeem/MLOPS-Project.mlflow
+  run_name: Initial_Run
+
+repository:
+  owner: aleeazeem
+  name: MLOPS-Project
+  
