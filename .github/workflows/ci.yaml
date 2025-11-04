@@ -9,6 +9,7 @@ jobs:
       DAGSHUB_ACCESS_TOKEN: ${{ secrets.DAGSHUB_ACCESS_TOKEN }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
     steps:
       - name: checkout code
         uses: actions/checkout@v3
