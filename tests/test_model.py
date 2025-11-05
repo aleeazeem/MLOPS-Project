@@ -13,7 +13,7 @@ class TestModelLoading(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Set up DagsHub credentials for MLflow tracking
-        config.setup_dagshub_mlflow()
+        config.set_dagshub_mlflow()
 
         # Load the new model from MLflow model registry
         cls.new_model_name = "my_model"
