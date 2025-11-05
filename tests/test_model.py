@@ -1,6 +1,7 @@
 # load test + signature test + performance test
 
 import unittest
+import mlflow
 import os
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
@@ -12,7 +13,7 @@ class TestModelLoading(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Set up DagsHub credentials for MLflow tracking
-        mlflow = config.setup_dagshub_mlflow()
+        config.setup_dagshub_mlflow()
 
         # Load the new model from MLflow model registry
         cls.new_model_name = "my_model"
