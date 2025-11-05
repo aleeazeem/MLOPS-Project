@@ -1,8 +1,11 @@
 import logging
 import os
+from re import M
 import yaml
 from dotenv import load_dotenv
 from typing import Any
+import dagshub
+import mlflow
 
 class Config:
     """Centralized configuration management"""
@@ -79,6 +82,14 @@ class Config:
     def max_features(self) -> int:
         return self.params['feature_engineering']['max_features']
     
+    @property
+    def test_size(self) -> float:
+        return self.params['data_ingestion']['test_size']
+    
+    @property
+    def file_name(self) -> str:
+        return self.params['file_name']
+    
     def get_param(self, *keys, default=None) -> Any:
         """Get nested param value: get_param('bucket', 'name')"""
         value = self.params
@@ -88,6 +99,20 @@ class Config:
             else:
                 return default
         return value if value is not None else default
+    
+    def set_dagshub_mlflow(self):
+        dagshub_url = "https://dagshub.com"
+        repo_owner = self.dagshub_username
+        repo_name = self.mlflow_repo_name
+        mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+
+        if self.environment == 'local':
+            dagshub.init(repo_owner='aleeazeem', repo_name='MLOPS-Project', mlflow=True)
+        else: 
+            dagshub_token = self.dagshub_token
+            os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+            os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+        return mlflow
 
 # Create singleton instance
 config = Config()

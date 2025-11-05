@@ -9,34 +9,8 @@ import yaml
 import logging
 from src.logger import logging
 from src.connection import s3_connection
-from dotenv import load_dotenv
 from src.config import config
 
-# for local only. If .env file is not present then it will be silently fail in CICD
-# and env varibales will be picked from the CICD environment
-load_dotenv()
-aws_access_key = config.aws_access_key
-aws_secret_key = config.aws_secret_key
-aws_region = config.aws_region
-env= config.environment
-
-
-def load_params(params_path: str) -> dict:
-    """Load parameters from a YAML file."""
-    try:
-        with open(params_path, 'r') as file:
-            params = yaml.safe_load(file)
-        logging.debug('Parameters retrieved from %s', params_path)
-        return params
-    except FileNotFoundError:
-        logging.error('File not found: %s', params_path)
-        raise
-    except yaml.YAMLError as e:
-        logging.error('YAML error: %s', e)
-        raise
-    except Exception as e:
-        logging.error('Unexpected error: %s', e)
-        raise
 
 def load_data(data_url: str) -> pd.DataFrame:
     """Load data from a CSV file."""
@@ -81,24 +55,19 @@ def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame, data_path: str)
 
 def main():
     try:
-        params = load_params(params_path='params.yaml')
-        test_size = params['data_ingestion']['test_size']
-        bucket_name = params['bucket']['name']
-        region_name = params['bucket']['region']
-        file_name = params['file_name']
         # test_size = 0.2
         
-        if env=='local':
+        if config.environment=='local':
             df = load_data(data_url='https://raw.githubusercontent.com/vikashishere/Datasets/refs/heads/main/data.csv')
         else:
-            if not aws_access_key or not aws_secret_key:
+            if not config.aws_access_key or not config.aws_secret_key:
                 raise ValueError("AWS credentials are not set in environment variables.")
-            s3 = s3_connection.s3_operations(bucket_name, aws_access_key, aws_secret_key, region_name)
-            df = s3.fetch_file_from_s3(file_name)
+            s3 = s3_connection.s3_operations(config.s3_bucket_name, config.aws_access_key, config.aws_secret_key, config.aws_region)
+            df = s3.fetch_file_from_s3(config.file_name)
 
 
         final_df = preprocess_data(df)
-        train_data, test_data = train_test_split(final_df, test_size=test_size, random_state=42)
+        train_data, test_data = train_test_split(final_df, test_size=config.test_size, random_state=42)
         save_data(train_data, test_data, data_path='./data')
     except Exception as e:
         logging.error('Failed to complete the data ingestion process: %s', e)

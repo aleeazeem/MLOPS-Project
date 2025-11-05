@@ -12,17 +12,7 @@ import warnings
 warnings.simplefilter("ignore", UserWarning)
 warnings.filterwarnings("ignore")
 
-dagshub_url = "https://dagshub.com"
-repo_owner = config.dagshub_username
-repo_name = config.mlflow_repo_name
-mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
-
-if config.environment == 'local':
-    dagshub.init(repo_owner='aleeazeem', repo_name='MLOPS-Project', mlflow=True)
-else: 
-    dagshub_token = config.dagshub_token
-    os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-    os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+config.set_dagshub_mlflow()
 
 def load_model_info(file_path: str) -> dict:
     """Load the model info from a JSON file."""
