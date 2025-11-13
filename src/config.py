@@ -37,6 +37,13 @@ class Config:
         return os.getenv('S3_BUCKET_NAME', 'complaints-datagrid-alee')
     
     @property
+    def ecr_repository(self) -> str:
+        repo = os.getenv('ECR_REPOSITORY')
+        if not repo:
+            raise ValueError("ECR_REPOSITORY not found in environment")
+        return repo
+    
+    @property
     def environment(self) -> str:
         env = os.getenv('ENVIRONMENT')
         if not env:
@@ -99,7 +106,7 @@ class Config:
             else:
                 return default
         return value if value is not None else default
-    
+
     def set_dagshub_mlflow(self):
         dagshub_url = "https://dagshub.com"
         repo_owner = self.dagshub_username

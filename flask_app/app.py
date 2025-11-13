@@ -10,7 +10,6 @@ from nltk.corpus import stopwords
 import string
 import re
 import dagshub
-from src.config import config
 
 import warnings
 warnings.simplefilter("ignore", UserWarning)
@@ -69,7 +68,15 @@ def normalize_text(text):
 
     return text
 
-config.set_dagshub_mlflow()
+# Set up Dagshub MLflow tracking
+dagshub_token = os.getenv("MLOPS-Project")
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+
+dagshub_url = "https://dagshub.com"
+repo_owner = "aleeazeem"
+repo_name = "MLOPS-Project"
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 
 
 
