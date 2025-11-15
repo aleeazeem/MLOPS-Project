@@ -73,7 +73,7 @@
 	ECR_REPOSITORY (capstone-proj)
     AWS_ACCOUNT_ID
    (Also add this permission to the IAM user: AmazonEC2ContainerRegistryFullAccess)
-   
+
 
 38. Execute CICD pipeline till the stage where we build and push image to ECR.
 
@@ -283,3 +283,4 @@ What is a PVC?
 3. When a pod is deployed and needs storage, it will request the storage defined in the PVC.
 
 ----------------------------------------------------------------------------------
+
