@@ -69,7 +69,7 @@ def normalize_text(text):
     return text
 
 # Set up Dagshub MLflow tracking
-dagshub_token = os.getenv("MLOPS-Project")
+dagshub_token = os.getenv('DAGSHUB_ACCESS_TOKEN')
 os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
 os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
